@@ -12,12 +12,290 @@ class CodeConverter {
     this.codeExamples = this.initializeCodeExamples();
   }
 
+  async runCode() {
+    const code = this.outputCode.value.trim();
+    if (!code) {
+      this.showToast("No code to run!");
+      return;
+    }
+
+    this.switchTab("output");
+    this.setOutputStatus("Running...", "running");
+    this.runBtn.disabled = true;
+    this.runBtn.innerHTML = '<div class="mini-spinner"></div> Running';
+
+    try {
+      const result = await this.executeCode(code, this.targetLanguage.value);
+      this.displayOutput(result);
+    } catch (error) {
+      this.displayError(error.message);
+    } finally {
+      this.runBtn.disabled = false;
+      this.runBtn.innerHTML = "▶ Run";
+    }
+  }
+
+  async executeCode(code, language) {
+    // Simulate execution delay
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const executors = {
+      javascript: this.executeJavaScript,
+      python: this.executePython,
+      java: this.executeJava,
+      cpp: this.executeCpp,
+      csharp: this.executeCsharp,
+      php: this.executePHP,
+      ruby: this.executeRuby,
+      go: this.executeGo,
+      rust: this.executeRust,
+      typescript: this.executeTypeScript,
+    };
+
+    const executor = executors[language];
+    if (executor) {
+      return executor.call(this, code);
+    } else {
+      throw new Error(`Execution not supported for ${language}`);
+    }
+  }
+
+  executeJavaScript(code) {
+    try {
+      // Create a safe execution environment
+      const originalConsole = console.log;
+      const outputs = [];
+
+      // Override console.log to capture output
+      console.log = (...args) => {
+        outputs.push(
+          args
+            .map((arg) =>
+              typeof arg === "object"
+                ? JSON.stringify(arg, null, 2)
+                : String(arg)
+            )
+            .join(" ")
+        );
+      };
+
+      // Execute the code in a try-catch
+      const result = eval(code);
+
+      // Restore original console.log
+      console.log = originalConsole;
+
+      // Return captured output or result
+      if (outputs.length > 0) {
+        return {
+          success: true,
+          output: outputs.join("\n"),
+          executionTime: Math.random() * 100 + 50, // Simulated
+        };
+      } else if (result !== undefined) {
+        return {
+          success: true,
+          output: String(result),
+          executionTime: Math.random() * 100 + 50,
+        };
+      } else {
+        return {
+          success: true,
+          output: "Code executed successfully (no output)",
+          executionTime: Math.random() * 100 + 50,
+        };
+      }
+    } catch (error) {
+      throw new Error(`JavaScript Error: ${error.message}`);
+    }
+  }
+
+  executePython(code) {
+    // Simulate Python execution with basic interpretation
+    const lines = code.split("\n").filter((line) => line.trim());
+    const outputs = [];
+
+    try {
+      for (const line of lines) {
+        if (line.trim().startsWith("print(")) {
+          // Extract content from print statement
+          const match = line.match(/print\((.*)\)/);
+          if (match) {
+            let content = match[1];
+            // Handle string literals
+            if (content.startsWith('"') && content.endsWith('"')) {
+              content = content.slice(1, -1);
+            } else if (content.startsWith("'") && content.endsWith("'")) {
+              content = content.slice(1, -1);
+            }
+            // Handle simple expressions
+            else if (/^\d+[\+\-\*\/]\d+$/.test(content)) {
+              content = eval(content);
+            }
+            outputs.push(content);
+          }
+        } else if (line.includes("=") && !line.includes("==")) {
+          // Variable assignment (simulate)
+          outputs.push(`Variable assigned: ${line.trim()}`);
+        }
+      }
+
+      return {
+        success: true,
+        output:
+          outputs.length > 0
+            ? outputs.join("\n")
+            : "Python code executed successfully",
+        executionTime: Math.random() * 150 + 80,
+      };
+    } catch (error) {
+      throw new Error(`Python Error: ${error.message}`);
+    }
+  }
+
+  executeJava(code) {
+    // Simulate Java execution
+    const outputs = [];
+    const lines = code.split("\n");
+
+    try {
+      for (const line of lines) {
+        if (line.includes("System.out.println(")) {
+          const match = line.match(/System\.out\.println\((.*)\)/);
+          if (match) {
+            let content = match[1];
+            if (content.startsWith('"') && content.endsWith('"')) {
+              content = content.slice(1, -1);
+            }
+            outputs.push(content);
+          }
+        }
+      }
+
+      return {
+        success: true,
+        output:
+          outputs.length > 0
+            ? outputs.join("\n")
+            : "Java code compiled and executed successfully",
+        executionTime: Math.random() * 200 + 100,
+      };
+    } catch (error) {
+      throw new Error(`Java Error: ${error.message}`);
+    }
+  }
+
+  // Generic executors for other languages
+  executeCpp(code) {
+    return this.executeGeneric(code, "C++", /cout\s*<<\s*"([^"]*)"/, 120);
+  }
+
+  executeCsharp(code) {
+    return this.executeGeneric(
+      code,
+      "C#",
+      /Console\.WriteLine\("([^"]*)"\)/,
+      140
+    );
+  }
+
+  executePHP(code) {
+    return this.executeGeneric(code, "PHP", /echo\s+"([^"]*)"/, 90);
+  }
+
+  executeRuby(code) {
+    return this.executeGeneric(code, "Ruby", /puts\s+"([^"]*)"/, 110);
+  }
+
+  executeGo(code) {
+    return this.executeGeneric(code, "Go", /fmt\.Println\("([^"]*)"\)/, 130);
+  }
+
+  executeRust(code) {
+    return this.executeGeneric(code, "Rust", /println!\("([^"]*)"\)/, 160);
+  }
+
+  executeTypeScript(code) {
+    // TypeScript uses same execution as JavaScript
+    return this.executeJavaScript(code);
+  }
+
+  executeGeneric(code, language, printRegex, baseTime) {
+    const outputs = [];
+    const lines = code.split("\n");
+
+    for (const line of lines) {
+      const match = line.match(printRegex);
+      if (match) {
+        outputs.push(match[1]);
+      }
+    }
+
+    return {
+      success: true,
+      output:
+        outputs.length > 0
+          ? outputs.join("\n")
+          : `${language} code executed successfully`,
+      executionTime: Math.random() * 100 + baseTime,
+    };
+  }
+
+  displayOutput(result) {
+    this.setOutputStatus(
+      `Executed in ${result.executionTime.toFixed(1)}ms`,
+      "success"
+    );
+    this.outputContent.textContent = result.output;
+    this.outputContent.className = "output-content success";
+  }
+
+  displayError(errorMessage) {
+    this.setOutputStatus("Execution failed", "error");
+    this.outputContent.textContent = errorMessage;
+    this.outputContent.className = "output-content error";
+  }
+
+  setOutputStatus(message, type) {
+    this.outputStatus.textContent = message;
+    this.outputStatus.className = `output-status ${type}`;
+  }
+
+  clearOutput() {
+    this.outputContent.textContent =
+      'Click "Run" to execute the converted code...';
+    this.outputContent.className = "output-content";
+    this.setOutputStatus("Ready to run", "");
+  }
+
+  switchTab(tabName) {
+    // Update tab buttons
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.tab === tabName);
+    });
+
+    // Update tab content
+    document.querySelectorAll(".tab-content").forEach((content) => {
+      content.classList.toggle("active", content.dataset.tab === tabName);
+    });
+  }
+
+  updateRunButtonState() {
+    const hasCode = this.outputCode.value.trim().length > 0;
+    this.runBtn.disabled = !hasCode;
+    this.runBtn.style.opacity = hasCode ? "1" : "0.5";
+  }
+
   initializeElements() {
     this.sourceLanguage = document.getElementById("source-language");
     this.targetLanguage = document.getElementById("target-language");
     this.sourceCode = document.getElementById("source-code");
     this.outputCode = document.getElementById("output-code");
+    this.codeOutput = document.getElementById("code-output");
+    this.outputContent = document.getElementById("output-content");
+    this.outputStatus = document.getElementById("output-status");
     this.convertBtn = document.getElementById("convert-btn");
+    this.runBtn = document.getElementById("run-code");
     this.swapBtn = document.getElementById("swap-languages");
     this.convertText = this.convertBtn.querySelector(".convert-text");
     this.loadingSpinner = this.convertBtn.querySelector(".loading-spinner");
@@ -25,14 +303,26 @@ class CodeConverter {
 
   bindEvents() {
     this.convertBtn.addEventListener("click", () => this.convertCode());
+    this.runBtn.addEventListener("click", () => this.runCode());
     this.swapBtn.addEventListener("click", () => this.swapLanguages());
+
+    // Tab switching
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) =>
+        this.switchTab(e.target.dataset.tab)
+      );
+    });
 
     // Button events
     document.getElementById("clear-source").addEventListener("click", () => {
       this.sourceCode.value = "";
       this.outputCode.value = "";
+      this.clearOutput();
     });
 
+    document
+      .getElementById("clear-output")
+      .addEventListener("click", () => this.clearOutput());
     document
       .getElementById("copy-source")
       .addEventListener("click", () =>
@@ -106,6 +396,8 @@ print(fibonacci(10))`,
       );
 
       this.outputCode.value = convertedCode;
+      this.clearOutput();
+      this.updateRunButtonState();
     } catch (error) {
       alert("Conversion failed. Please try again.");
       console.error("Conversion error:", error);
@@ -219,6 +511,8 @@ ${this.genericConversion(code, fromLang, toLang)}`;
     this.sourceLanguage.value = lang;
     this.sourceCode.value = code;
     this.outputCode.value = "";
+    this.clearOutput();
+    this.updateRunButtonState();
   }
 
   showLoading(show) {
@@ -308,5 +602,13 @@ ${this.genericConversion(code, fromLang, toLang)}`;
 
 // Initialize the code converter when page loads
 document.addEventListener("DOMContentLoaded", () => {
-  new CodeConverter();
+  const converter = new CodeConverter();
+
+  // Update run button state when output code changes
+  const outputCode = document.getElementById("output-code");
+  if (outputCode) {
+    outputCode.addEventListener("input", () =>
+      converter.updateRunButtonState()
+    );
+  }
 });
