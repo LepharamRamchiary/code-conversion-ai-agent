@@ -5,4 +5,4 @@ def agent(request):
     """
     Render the index page.
     """
-    return render(request, 'base.html')
+    return render(request, 'agent/agent.html')

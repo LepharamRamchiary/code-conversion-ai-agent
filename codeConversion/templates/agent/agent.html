@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% endblock %}
+{% block extra_css %} <link rel="stylesheet" href="{% static 'css/agent.css' %}"> {% endblock %}
+
+{% block content %}
+<main>
+        <div class="converter-container">
+            <div class="converter-header">
+                <h1>AI Code Converter</h1>
+                <p>Convert your code between different programming languages instantly</p>
+            </div>
+
+            <!-- Language Selection -->
+            <div class="language-selector">
+                <div class="language-group">
+                    <label for="source-language">From:</label>
+                    <select id="source-language" class="language-select">
+                        <option value="javascript">JavaScript</option>
+                        <option value="python">Python</option>
+                        <option value="java">Java</option>
+                        <option value="cpp">C++</option>
+                        <option value="csharp">C#</option>
+                        <option value="php">PHP</option>
+                        <option value="ruby">Ruby</option>
+                        <option value="go">Go</option>
+                        <option value="rust">Rust</option>
+                        <option value="typescript">TypeScript</option>
+                    </select>
+                </div>
+
+                <div class="swap-button-container">
+                    <button id="swap-languages" class="swap-btn" title="Swap Languages">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 3l4 4-4 4"/>
+                            <path d="M20 7H4"/>
+                            <path d="M8 21l-4-4 4-4"/>
+                            <path d="M4 17h16"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="language-group">
+                    <label for="target-language">To:</label>
+                    <select id="target-language" class="language-select">
+                        <option value="python">Python</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="java">Java</option>
+                        <option value="cpp">C++</option>
+                        <option value="csharp">C#</option>
+                        <option value="php">PHP</option>
+                        <option value="ruby">Ruby</option>
+                        <option value="go">Go</option>
+                        <option value="rust">Rust</option>
+                        <option value="typescript">TypeScript</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Code Editor Areas -->
+            <div class="editor-container">
+                <div class="editor-panel">
+                    <div class="editor-header">
+                        <h3>Source Code</h3>
+                        <div class="editor-actions">
+                            <button id="clear-source" class="btn-secondary">Clear</button>
+                            <button id="copy-source" class="btn-secondary">Copy</button>
+                        </div>
+                    </div>
+                    <textarea 
+                        id="source-code" 
+                        class="code-editor"
+                        placeholder="Paste your source code here..."
+                        spellcheck="false"
+                    ></textarea>
+                </div>
+
+                <div class="convert-section">
+                    <button id="convert-btn" class="convert-button">
+                        <span class="convert-text">Convert Code</span>
+                        <div class="loading-spinner" style="display: none;">
+                            <div class="spinner"></div>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="editor-panel">
+                    <div class="editor-header">
+                        <h3>Converted Code</h3>
+                        <div class="editor-actions">
+                            <button id="copy-output" class="btn-secondary">Copy</button>
+                            <button id="download-output" class="btn-secondary">Download</button>
+                        </div>
+                    </div>
+                    <textarea 
+                        id="output-code" 
+                        class="code-editor"
+                        placeholder="Converted code will appear here..."
+                        readonly
+                        spellcheck="false"
+                    ></textarea>
+                </div>
+            </div>
+
+            <!-- Example Code Section -->
+            <div class="examples-section">
+                <h3>Try These Examples:</h3>
+                <div class="example-buttons">
+                    <button class="example-btn" data-lang="javascript" data-code="function fibonacci(n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+console.log(fibonacci(10));">JavaScript Fibonacci</button>
+                    <button class="example-btn" data-lang="python" data-code="def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    
+    return quicksort(left) + middle + quicksort(right)
+
+print(quicksort([3, 6, 8, 10, 1, 2, 1]))">Python Quicksort</button>
+                    <button class="example-btn" data-lang="java" data-code="public class Calculator {
+    public static int add(int a, int b) {
+        return a + b;
+    }
+    
+    public static void main(String[] args) {
+        System.out.println(add(5, 3));
+    }
+}">Java Calculator</button>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+
+
+{% block extra_js %} <script src="{% static 'js/agent.js' %}"></script> {% endblock %}
