@@ -300,6 +300,7 @@ main {
   outline: none;
 }
 
+
 .code-editor::placeholder {
   color: #a0aec0;
   font-style: italic;
@@ -689,6 +690,9 @@ footer {
 
   .toast.show {
     transform: translateY(0);
+  }
+  .editor-panel {
+    height: 362px;
   }
 }
 
