@@ -5,11 +5,13 @@
 <link rel="stylesheet" href="{% static 'css/agent.css' %}" /> 
 {% endblock %} 
 {%block content %}
+<!-- Add CSRF token for AJAX requests -->
+{% csrf_token %}
 <main>
   <div class="converter-container">
     <div class="converter-header">
       <h1>AI Code Converter</h1>
-      <p>Convert your code between different programming languages instantly</p>
+      <p>Convert your code between different programming languages instantly using Google Gemini AI</p>
     </div>
 
     <!-- Language Selection -->
@@ -85,7 +87,7 @@
 
       <div class="convert-section">
         <button id="convert-btn" class="convert-button">
-          <span class="convert-text">Convert Code</span>
+          <span class="convert-text">Convert with AI</span>
           <div class="loading-spinner" style="display: none">
             <div class="spinner"></div>
           </div>
@@ -110,20 +112,17 @@
             id="output-code"
             class="code-editor tab-content active"
             data-tab="code"
-            placeholder="Converted code will appear here..."
+            placeholder="AI-converted code will appear here..."
             readonly
             spellcheck="false"
-          >
-                    
-                    </textarea
-          >
+          ></textarea>
           <div class="code-output tab-content" id="code-output" data-tab="output">
-                            <div class="output-header">
-                                <span class="output-status" id="output-status">Ready to run</span>
-                                <button id="clear-output" class="btn-clear">Clear</button>
-                            </div>
-                            <pre id="output-content" class="output-content">Click "Run" to execute the converted code...</pre>
-                        </div>
+            <div class="output-header">
+              <span class="output-status" id="output-status">Ready to run</span>
+              <button id="clear-output" class="btn-clear">Clear</button>
+            </div>
+            <pre id="output-content" class="output-content">Click "Run" to execute the converted code...</pre>
+          </div>
         </div>
       </div>
     </div>
@@ -181,6 +180,7 @@ print(quicksort([3, 6, 8, 10, 1, 2, 1]))"
     </div>
   </div>
 </main>
-{% endblock %} {% block extra_js %}
+{% endblock %} 
+{% block extra_js %}
 <script src="{% static 'js/agent.js' %}"></script>
 {% endblock %}
