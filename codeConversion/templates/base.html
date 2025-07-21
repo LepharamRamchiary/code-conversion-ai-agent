@@ -1,69 +1,75 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Code Conversion AI Agent</title>
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     {% block extra_css %}{% endblock %}
-</head>
-<body>
+  </head>
+  <body>
     <!-- Header -->
     <header>
-        <div class="header-container">
-            <a href="#" class="logo">
-                {% comment %} {% block logo %}Code Conversion AI Agent{% endblock %} {% endcomment %}
-                <img src="{% static 'images/logo.png' %}" alt="Code Conversion AI Agent Logo" class="logo-image">
-            </a>
-            
-            <button class="menu-toggle" id="menu-toggle">&#9776;</button>
-            <nav>
-                <ul class="nav-menu" id="nav-menu">
-                    {% block nav_menu %}
-                    <li><a href="#">About us</a></li>
-                    <li><a href="#">Blog</a></li>
-                    {% endblock %}
-                </ul>
-            </nav>
-        </div>
+      <div class="header-container">
+        <a href="#" class="logo">
+          {% comment %} {% block logo %}Code Conversion AI Agent{% endblock %}
+          {% endcomment %}
+          <img
+            src="{% static 'images/logo.png' %}"
+            alt="Code Conversion AI Agent Logo"
+            class="logo-image"
+          />
+        </a>
+
+        <button class="menu-toggle" id="menu-toggle">&#9776;</button>
+        <nav>
+          <ul class="nav-menu" id="nav-menu">
+            {% block nav_menu %}
+            <li><a href="#">About us</a></li>
+            <li><a href="#">Blog</a></li>
+            {% endblock %}
+          </ul>
+        </nav>
+      </div>
     </header>
 
     {% block content %}{% endblock %}
 
     <!-- Footer -->
     <footer>
-        <div class="footer-container">
-            <div class="footer-content">
-                {% block footer_content %}
-                <div class="footer-section">
-                    <h3>About</h3>
-                    <p>AI-powered code conversion agent for seamless development.</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Links</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">API</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Contact</h3>
-                    <p>support@codeconvert.ai</p>
-                    <p>24/7 AI Support</p>
-                </div>
-                {% endblock %}
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; {% now "Y" %} {% block company_name %}CodeConvert AI{% endblock %}. All rights reserved.</p>
-            </div>
+      <div class="footer-container">
+        <div class="footer-content">
+          {% block footer_content %}
+          <div class="footer-section">
+            <h3>About</h3>
+            <p>AI-powered code conversion agent for seamless development.</p>
+          </div>
+          <div class="footer-section">
+            <h3>Links</h3>
+            <ul class="footer-links">
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">API</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Contact</h3>
+            <p>support@codeconvert.ai</p>
+            <p>24/7 AI Support</p>
+          </div>
+          {% endblock %}
         </div>
+        <div class="footer-bottom">
+          <p> &copy; {% now "Y" %} {% block company_name %}CodeConvert AI{%endblock %}. All rights reserved.
+          </p>
+        </div>
+      </div>
     </footer>
 
     {% block extra_js %}
     <script src="{% static 'js/base.js' %}"></script>
     {% endblock %}
-</body>
+  </body>
 </html>

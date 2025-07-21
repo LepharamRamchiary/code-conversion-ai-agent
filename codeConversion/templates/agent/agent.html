@@ -11,7 +11,7 @@
         <div class="converter-container">
             <div class="converter-header">
                 <h1>AI Code Converter</h1>
-                <p>Convert your code between different programming languages instantly using AI</p>
+                <p>Convert your code between different programming languages instantly using Google Gemini AI</p>
             </div>
 
             <!-- Language Selection -->
@@ -121,128 +121,6 @@
             </div>
         </div>
     </main>
-
-{% comment %} <main>
-  <div class="converter-container">
-    <div class="converter-header">
-      <h1>AI Code Converter</h1>
-      <p>Convert your code between different programming languages instantly using Google Gemini AI</p>
-    </div>
-
-    <!-- Language Selection -->
-    <div class="language-selector">
-      <div class="language-group">
-        <label for="source-language">From:</label>
-        <select id="source-language" class="language-select">
-          <option value="javascript">JavaScript</option>
-          <option value="python">Python</option>
-          <option value="java">Java</option>
-          <option value="cpp">C++</option>
-          <option value="csharp">C#</option>
-          <option value="php">PHP</option>
-          <option value="ruby">Ruby</option>
-          <option value="go">Go</option>
-          <option value="rust">Rust</option>
-          <option value="typescript">TypeScript</option>
-        </select>
-      </div>
-
-      <div class="swap-button-container">
-        <button id="swap-languages" class="swap-btn" title="Swap Languages">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path d="M16 3l4 4-4 4" />
-            <path d="M20 7H4" />
-            <path d="M8 21l-4-4 4-4" />
-            <path d="M4 17h16" />
-          </svg>
-        </button>
-      </div>
-
-      <div class="language-group">
-        <label for="target-language">To:</label>
-        <select id="target-language" class="language-select">
-          <option value="python">Python</option>
-          <option value="javascript">JavaScript</option>
-          <option value="java">Java</option>
-          <option value="cpp">C++</option>
-          <option value="csharp">C#</option>
-          <option value="php">PHP</option>
-          <option value="ruby">Ruby</option>
-          <option value="go">Go</option>
-          <option value="rust">Rust</option>
-          <option value="typescript">TypeScript</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Code Editor Areas -->
-    <div class="editor-container">
-      <div class="editor-panel">
-        <div class="editor-header">
-          <h3>Source Code</h3>
-          <div class="editor-actions">
-            <button id="clear-source" class="btn-secondary">Clear</button>
-            <button id="copy-source" class="btn-secondary">Copy</button>
-          </div>
-        </div>
-        <textarea
-          id="source-code"
-          class="code-editor"
-          placeholder="Paste your source code here..."
-          spellcheck="false"
-        ></textarea>
-      </div>
-
-      <div class="convert-section">
-        <button id="convert-btn" class="convert-button">
-          <span class="convert-text">Convert with AI</span>
-          <div class="loading-spinner" style="display: none">
-            <div class="spinner"></div>
-          </div>
-        </button>
-      </div>
-
-      <div class="editor-panel">
-        <div class="editor-header">
-          <h3>Converted Code</h3>
-          <div class="editor-actions">
-            <button id="run-code" class="btn-run">▶ Run</button>
-            <button id="copy-output" class="btn-secondary">Copy</button>
-            <button id="download-output" class="btn-secondary">Download</button>
-          </div>
-        </div>
-        <div class="code-output-container">
-          <div class="code-tabs">
-            <button class="tab-btn active" data-tab="code">Code</button>
-            <button class="tab-btn" data-tab="output">Output</button>
-          </div>
-          <textarea
-            id="output-code"
-            class="code-editor tab-content active"
-            data-tab="code"
-            placeholder="AI-converted code will appear here..."
-            readonly
-            spellcheck="false"
-          ></textarea>
-          <div class="code-output tab-content" id="code-output" data-tab="output">
-            <div class="output-header">
-              <span class="output-status" id="output-status">Ready to run</span>
-              <button id="clear-output" class="btn-clear">Clear</button>
-            </div>
-            <pre id="output-content" class="output-content">Click "Run" to execute the converted code...</pre>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</main> {% endcomment %}
 {% endblock %} 
 {% block extra_js %}
 <script src="{% static 'js/agent.js' %}"></script>
