@@ -1,12 +1,16 @@
-import json
-import google.generativeai as genai
+from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from django.conf import settings
-from django.shortcuts import render
+from django.contrib import messages
+import json
+import logging
+import subprocess
+import tempfile
+import os
+from .gemini_service import gemini_converter
 
-genai.configure(api_key=settings.GEMINI_API_KEY)
+logger = logging.getLogger('converter')
 
 # Create your views here.
 def agent(request):
@@ -18,153 +22,209 @@ def agent(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def convert_code(request):
-    """Convert code using Gemini LLM"""
+    """Handle code conversion requests"""
     try:
+        # Parse JSON data from request
         data = json.loads(request.body)
-        source_code = data.get('source_code', '').strip()
-        source_language = data.get('source_language', '')
-        target_language = data.get('target_language', '')
         
+        source_code = data.get('source_code', '').strip()
+        source_language = data.get('source_language', '').lower()
+        target_language = data.get('target_language', '').lower()
+        
+        # Validate input
         if not source_code:
             return JsonResponse({
                 'success': False,
                 'error': 'Source code is required'
             }, status=400)
         
-        # Convert code using Gemini
-        converted_code = convert_with_gemini(source_code, source_language, target_language)
+        if not source_language or not target_language:
+            return JsonResponse({
+                'success': False,
+                'error': 'Both source and target languages are required'
+            }, status=400)
         
-        return JsonResponse({
-            'success': True,
-            'converted_code': converted_code
-        })
+        if source_language == target_language:
+            return JsonResponse({
+                'success': False,
+                'error': 'Source and target languages must be different'
+            }, status=400)
         
+        # Validate supported languages
+        supported_languages = [
+            'javascript', 'python', 'java', 'cpp', 'csharp', 
+            'php', 'ruby', 'go', 'rust', 'typescript'
+        ]
+        
+        if source_language not in supported_languages:
+            return JsonResponse({
+                'success': False,
+                'error': f'Unsupported source language: {source_language}'
+            }, status=400)
+        
+        if target_language not in supported_languages:
+            return JsonResponse({
+                'success': False,
+                'error': f'Unsupported target language: {target_language}'
+            }, status=400)
+        
+        # Log the conversion request
+        logger.info(f"Code conversion request: {source_language} -> {target_language}")
+        
+        # Convert the code using Gemini AI
+        result = gemini_converter.convert_code(source_code, source_language, target_language)
+        
+        if result['success']:
+            logger.info("Code conversion completed successfully")
+            return JsonResponse({
+                'success': True,
+                'converted_code': result['converted_code'],
+                'source_language': result['source_language'],
+                'target_language': result['target_language'],
+                'message': f'Code successfully converted from {source_language.title()} to {target_language.title()}'
+            })
+        else:
+            logger.error(f"Code conversion failed: {result['error']}")
+            return JsonResponse({
+                'success': False,
+                'error': result['error']
+            }, status=500)
+    
     except json.JSONDecodeError:
         return JsonResponse({
             'success': False,
             'error': 'Invalid JSON data'
         }, status=400)
+    
     except Exception as e:
+        error_msg = f'Unexpected error during conversion: {str(e)}'
+        logger.error(error_msg)
         return JsonResponse({
             'success': False,
-            'error': f'Conversion failed: {str(e)}'
+            'error': error_msg
         }, status=500)
-
-def convert_with_gemini(source_code, source_lang, target_lang):
-    """Use Gemini to convert code between languages"""
-    try:
-        # Initialize the model
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        
-        # Create a detailed prompt for code conversion
-        prompt = f"""
-        You are an expert programmer. Convert the following {source_lang} code to {target_lang}.
-        
-        Requirements:
-        1. Maintain the same functionality and logic
-        2. Follow {target_lang} best practices and conventions
-        3. Add appropriate comments where necessary
-        4. Ensure the code is clean and readable
-        5. Handle edge cases appropriately
-        6. Only return the converted code, no explanations
-        
-        Source Language: {source_lang}
-        Target Language: {target_lang}
-        
-        Source Code:
-        ```{source_lang}
-        {source_code}
-        ```
-        
-        Convert to {target_lang}:
-        """
-        
-        # Generate the response
-        response = model.generate_content(prompt)
-        
-        # Extract code from response (remove markdown formatting if present)
-        converted_code = response.text.strip()
-        
-        # Clean up markdown code blocks if they exist
-        if converted_code.startswith('```'):
-            lines = converted_code.split('\n')
-            if len(lines) > 2:
-                # Remove first and last lines (markdown markers)
-                converted_code = '\n'.join(lines[1:-1])
-        
-        return converted_code
-        
-    except Exception as e:
-        raise Exception(f"Gemini API error: {str(e)}")
 
 @csrf_exempt
 @require_http_methods(["POST"])
-def execute_code(request):
-    """Execute code in a sandboxed environment (simulation)"""
+def run_code(request):
+    """Handle code execution requests (limited support)"""
     try:
         data = json.loads(request.body)
         code = data.get('code', '').strip()
-        language = data.get('language', '')
+        language = data.get('language', '').lower()
         
         if not code:
             return JsonResponse({
                 'success': False,
-                'error': 'Code is required'
-            }, status=400)
+                'error': 'Code is required for execution'
+            })
         
-        # For security reasons, we'll simulate execution
-        # In production, use proper sandboxing solutions
-        result = simulate_code_execution(code, language)
+        # Security check - only allow safe languages for execution
+        executable_languages = ['python', 'javascript']
         
-        return JsonResponse({
-            'success': True,
-            'output': result['output'],
-            'execution_time': result['execution_time']
-        })
+        if language not in executable_languages:
+            return JsonResponse({
+                'success': False,
+                'error': f'Code execution not supported for {language}. Supported languages: {", ".join(executable_languages)}'
+            })
         
-    except Exception as e:
+        # Execute the code based on language
+        result = execute_code(code, language)
+        
+        return JsonResponse(result)
+    
+    except json.JSONDecodeError:
         return JsonResponse({
             'success': False,
-            'error': f'Execution failed: {str(e)}'
+            'error': 'Invalid JSON data'
+        }, status=400)
+    
+    except Exception as e:
+        logger.error(f"Code execution error: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': f'Execution error: {str(e)}'
         }, status=500)
 
-def simulate_code_execution(code, language):
-    """Simulate code execution - replace with proper sandboxing in production"""
-    import time
-    import random
+def execute_code(code, language):
+    """Execute code safely in a temporary environment"""
+    try:
+        # Create a temporary file
+        with tempfile.NamedTemporaryFile(mode='w', suffix=get_file_extension(language), delete=False) as temp_file:
+            temp_file.write(code)
+            temp_file_path = temp_file.name
+        
+        try:
+            if language == 'python':
+                # Execute Python code
+                result = subprocess.run(
+                    ['python', temp_file_path],
+                    capture_output=True,
+                    text=True,
+                    timeout=10  # 10 second timeout
+                )
+            elif language == 'javascript':
+                # Execute JavaScript code with Node.js
+                result = subprocess.run(
+                    ['node', temp_file_path],
+                    capture_output=True,
+                    text=True,
+                    timeout=10  # 10 second timeout
+                )
+            else:
+                return {
+                    'success': False,
+                    'error': f'Execution not implemented for {language}'
+                }
+            
+            if result.returncode == 0:
+                return {
+                    'success': True,
+                    'output': result.stdout,
+                    'error': result.stderr if result.stderr else None
+                }
+            else:
+                return {
+                    'success': False,
+                    'error': result.stderr or 'Execution failed',
+                    'output': result.stdout
+                }
+        
+        finally:
+            # Clean up temporary file
+            try:
+                os.unlink(temp_file_path)
+            except OSError:
+                pass
     
-    start_time = time.time()
-    
-    # Simple output extraction based on language
-    output_patterns = {
-        'python': ['print(', 'print '],
-        'javascript': ['console.log('],
-        'java': ['System.out.println('],
-        'cpp': ['cout <<'],
-        'csharp': ['Console.WriteLine('],
-        'php': ['echo '],
-        'ruby': ['puts '],
-        'go': ['fmt.Println('],
-        'rust': ['println!(']
+    except subprocess.TimeoutExpired:
+        return {
+            'success': False,
+            'error': 'Code execution timed out (10 seconds limit)'
+        }
+    except FileNotFoundError:
+        return {
+            'success': False,
+            'error': f'Runtime not found for {language}. Please ensure it is installed.'
+        }
+    except Exception as e:
+        return {
+            'success': False,
+            'error': f'Execution error: {str(e)}'
+        }
+
+def get_file_extension(language):
+    """Get file extension for a programming language"""
+    extensions = {
+        'python': '.py',
+        'javascript': '.js',
+        'java': '.java',
+        'cpp': '.cpp',
+        'csharp': '.cs',
+        'php': '.php',
+        'ruby': '.rb',
+        'go': '.go',
+        'rust': '.rs',
+        'typescript': '.ts'
     }
-    
-    outputs = []
-    lines = code.split('\n')
-    patterns = output_patterns.get(language, [])
-    
-    for line in lines:
-        for pattern in patterns:
-            if pattern in line:
-                # Extract simple string outputs
-                if '"' in line:
-                    start = line.find('"') + 1
-                    end = line.rfind('"')
-                    if start < end:
-                        outputs.append(line[start:end])
-    
-    execution_time = (time.time() - start_time) * 1000 + random.uniform(50, 200)
-    
-    return {
-        'output': '\n'.join(outputs) if outputs else f'{language} code executed successfully',
-        'execution_time': round(execution_time, 1)
-    }
+    return extensions.get(language, '.txt')

@@ -1,1037 +1,383 @@
-// // Mobile menu toggle
-// document.getElementById("menu-toggle").onclick = function () {
-//   var nav = document.getElementById("nav-menu");
-//   nav.classList.toggle("active");
-// };
-
-// // Code conversion functionality
-// class CodeConverter {
-//   constructor() {
-//     this.initializeElements();
-//     this.bindEvents();
-//     this.codeExamples = this.initializeCodeExamples();
-//   }
-
-//   async runCode() {
-//     const code = this.outputCode.value.trim();
-//     if (!code) {
-//       this.showToast("No code to run!");
-//       return;
-//     }
-
-//     this.switchTab("output");
-//     this.setOutputStatus("Running...", "running");
-//     this.runBtn.disabled = true;
-//     this.runBtn.innerHTML = '<div class="mini-spinner"></div> Running';
-
-//     try {
-//       const result = await this.executeCode(code, this.targetLanguage.value);
-//       this.displayOutput(result);
-//     } catch (error) {
-//       this.displayError(error.message);
-//     } finally {
-//       this.runBtn.disabled = false;
-//       this.runBtn.innerHTML = "▶ Run";
-//     }
-//   }
-
-//   async executeCode(code, language) {
-//     // Simulate execution delay
-//     await new Promise((resolve) => setTimeout(resolve, 1000));
-
-//     const executors = {
-//       javascript: this.executeJavaScript,
-//       python: this.executePython,
-//       java: this.executeJava,
-//       cpp: this.executeCpp,
-//       csharp: this.executeCsharp,
-//       php: this.executePHP,
-//       ruby: this.executeRuby,
-//       go: this.executeGo,
-//       rust: this.executeRust,
-//       typescript: this.executeTypeScript,
-//     };
-
-//     const executor = executors[language];
-//     if (executor) {
-//       return executor.call(this, code);
-//     } else {
-//       throw new Error(`Execution not supported for ${language}`);
-//     }
-//   }
-
-//   executeJavaScript(code) {
-//     try {
-//       // Create a safe execution environment
-//       const originalConsole = console.log;
-//       const outputs = [];
-
-//       // Override console.log to capture output
-//       console.log = (...args) => {
-//         outputs.push(
-//           args
-//             .map((arg) =>
-//               typeof arg === "object"
-//                 ? JSON.stringify(arg, null, 2)
-//                 : String(arg)
-//             )
-//             .join(" ")
-//         );
-//       };
-
-//       // Execute the code in a try-catch
-//       const result = eval(code);
-
-//       // Restore original console.log
-//       console.log = originalConsole;
-
-//       // Return captured output or result
-//       if (outputs.length > 0) {
-//         return {
-//           success: true,
-//           output: outputs.join("\n"),
-//           executionTime: Math.random() * 100 + 50, // Simulated
-//         };
-//       } else if (result !== undefined) {
-//         return {
-//           success: true,
-//           output: String(result),
-//           executionTime: Math.random() * 100 + 50,
-//         };
-//       } else {
-//         return {
-//           success: true,
-//           output: "Code executed successfully (no output)",
-//           executionTime: Math.random() * 100 + 50,
-//         };
-//       }
-//     } catch (error) {
-//       throw new Error(`JavaScript Error: ${error.message}`);
-//     }
-//   }
-
-//   executePython(code) {
-//     // Simulate Python execution with basic interpretation
-//     const lines = code.split("\n").filter((line) => line.trim());
-//     const outputs = [];
-
-//     try {
-//       for (const line of lines) {
-//         if (line.trim().startsWith("print(")) {
-//           // Extract content from print statement
-//           const match = line.match(/print\((.*)\)/);
-//           if (match) {
-//             let content = match[1];
-//             // Handle string literals
-//             if (content.startsWith('"') && content.endsWith('"')) {
-//               content = content.slice(1, -1);
-//             } else if (content.startsWith("'") && content.endsWith("'")) {
-//               content = content.slice(1, -1);
-//             }
-//             // Handle simple expressions
-//             else if (/^\d+[\+\-\*\/]\d+$/.test(content)) {
-//               content = eval(content);
-//             }
-//             outputs.push(content);
-//           }
-//         } else if (line.includes("=") && !line.includes("==")) {
-//           // Variable assignment (simulate)
-//           outputs.push(`Variable assigned: ${line.trim()}`);
-//         }
-//       }
-
-//       return {
-//         success: true,
-//         output:
-//           outputs.length > 0
-//             ? outputs.join("\n")
-//             : "Python code executed successfully",
-//         executionTime: Math.random() * 150 + 80,
-//       };
-//     } catch (error) {
-//       throw new Error(`Python Error: ${error.message}`);
-//     }
-//   }
-
-//   executeJava(code) {
-//     // Simulate Java execution
-//     const outputs = [];
-//     const lines = code.split("\n");
-
-//     try {
-//       for (const line of lines) {
-//         if (line.includes("System.out.println(")) {
-//           const match = line.match(/System\.out\.println\((.*)\)/);
-//           if (match) {
-//             let content = match[1];
-//             if (content.startsWith('"') && content.endsWith('"')) {
-//               content = content.slice(1, -1);
-//             }
-//             outputs.push(content);
-//           }
-//         }
-//       }
-
-//       return {
-//         success: true,
-//         output:
-//           outputs.length > 0
-//             ? outputs.join("\n")
-//             : "Java code compiled and executed successfully",
-//         executionTime: Math.random() * 200 + 100,
-//       };
-//     } catch (error) {
-//       throw new Error(`Java Error: ${error.message}`);
-//     }
-//   }
-
-//   // Generic executors for other languages
-//   executeCpp(code) {
-//     return this.executeGeneric(code, "C++", /cout\s*<<\s*"([^"]*)"/, 120);
-//   }
-
-//   executeCsharp(code) {
-//     return this.executeGeneric(
-//       code,
-//       "C#",
-//       /Console\.WriteLine\("([^"]*)"\)/,
-//       140
-//     );
-//   }
-
-//   executePHP(code) {
-//     return this.executeGeneric(code, "PHP", /echo\s+"([^"]*)"/, 90);
-//   }
-
-//   executeRuby(code) {
-//     return this.executeGeneric(code, "Ruby", /puts\s+"([^"]*)"/, 110);
-//   }
-
-//   executeGo(code) {
-//     return this.executeGeneric(code, "Go", /fmt\.Println\("([^"]*)"\)/, 130);
-//   }
-
-//   executeRust(code) {
-//     return this.executeGeneric(code, "Rust", /println!\("([^"]*)"\)/, 160);
-//   }
-
-//   executeTypeScript(code) {
-//     // TypeScript uses same execution as JavaScript
-//     return this.executeJavaScript(code);
-//   }
-
-//   executeGeneric(code, language, printRegex, baseTime) {
-//     const outputs = [];
-//     const lines = code.split("\n");
-
-//     for (const line of lines) {
-//       const match = line.match(printRegex);
-//       if (match) {
-//         outputs.push(match[1]);
-//       }
-//     }
-
-//     return {
-//       success: true,
-//       output:
-//         outputs.length > 0
-//           ? outputs.join("\n")
-//           : `${language} code executed successfully`,
-//       executionTime: Math.random() * 100 + baseTime,
-//     };
-//   }
-
-//   displayOutput(result) {
-//     this.setOutputStatus(
-//       `Executed in ${result.executionTime.toFixed(1)}ms`,
-//       "success"
-//     );
-//     this.outputContent.textContent = result.output;
-//     this.outputContent.className = "output-content success";
-//   }
-
-//   displayError(errorMessage) {
-//     this.setOutputStatus("Execution failed", "error");
-//     this.outputContent.textContent = errorMessage;
-//     this.outputContent.className = "output-content error";
-//   }
-
-//   setOutputStatus(message, type) {
-//     this.outputStatus.textContent = message;
-//     this.outputStatus.className = `output-status ${type}`;
-//   }
-
-//   clearOutput() {
-//     this.outputContent.textContent =
-//       'Click "Run" to execute the converted code...';
-//     this.outputContent.className = "output-content";
-//     this.setOutputStatus("Ready to run", "");
-//   }
-
-//   switchTab(tabName) {
-//     // Update tab buttons
-//     document.querySelectorAll(".tab-btn").forEach((btn) => {
-//       btn.classList.toggle("active", btn.dataset.tab === tabName);
-//     });
-
-//     // Update tab content
-//     document.querySelectorAll(".tab-content").forEach((content) => {
-//       content.classList.toggle("active", content.dataset.tab === tabName);
-//     });
-//   }
-
-//   updateRunButtonState() {
-//     const hasCode = this.outputCode.value.trim().length > 0;
-//     this.runBtn.disabled = !hasCode;
-//     this.runBtn.style.opacity = hasCode ? "1" : "0.5";
-//   }
-
-//   initializeElements() {
-//     this.sourceLanguage = document.getElementById("source-language");
-//     this.targetLanguage = document.getElementById("target-language");
-//     this.sourceCode = document.getElementById("source-code");
-//     this.outputCode = document.getElementById("output-code");
-//     this.codeOutput = document.getElementById("code-output");
-//     this.outputContent = document.getElementById("output-content");
-//     this.outputStatus = document.getElementById("output-status");
-//     this.convertBtn = document.getElementById("convert-btn");
-//     this.runBtn = document.getElementById("run-code");
-//     this.swapBtn = document.getElementById("swap-languages");
-//     this.convertText = this.convertBtn.querySelector(".convert-text");
-//     this.loadingSpinner = this.convertBtn.querySelector(".loading-spinner");
-//   }
-
-//   bindEvents() {
-//     this.convertBtn.addEventListener("click", () => this.convertCode());
-//     this.runBtn.addEventListener("click", () => this.runCode());
-//     this.swapBtn.addEventListener("click", () => this.swapLanguages());
-
-//     // Tab switching
-//     document.querySelectorAll(".tab-btn").forEach((btn) => {
-//       btn.addEventListener("click", (e) =>
-//         this.switchTab(e.target.dataset.tab)
-//       );
-//     });
-
-//     // Button events
-//     document.getElementById("clear-source").addEventListener("click", () => {
-//       this.sourceCode.value = "";
-//       this.outputCode.value = "";
-//       this.clearOutput();
-//     });
-
-//     document
-//       .getElementById("clear-output")
-//       .addEventListener("click", () => this.clearOutput());
-//     document
-//       .getElementById("copy-source")
-//       .addEventListener("click", () =>
-//         this.copyToClipboard(this.sourceCode.value)
-//       );
-//     document
-//       .getElementById("copy-output")
-//       .addEventListener("click", () =>
-//         this.copyToClipboard(this.outputCode.value)
-//       );
-//     document
-//       .getElementById("download-output")
-//       .addEventListener("click", () => this.downloadCode());
-
-//     // Example buttons
-//     document.querySelectorAll(".example-btn").forEach((btn) => {
-//       btn.addEventListener("click", (e) => {
-//         const lang = e.target.dataset.lang;
-//         const code = e.target.dataset.code;
-//         this.loadExample(lang, code);
-//       });
-//     });
-//   }
-
-//   initializeCodeExamples() {
-//     return {
-//       fibonacci: {
-//         javascript: `function fibonacci(n) {
-//     if (n <= 1) return n;
-//                         return fibonacci(n - 1) + fibonacci(n - 2);
-// }
-
-// console.log(fibonacci(10));`,
-//         python: `def fibonacci(n):
-//     if n <= 1:
-//         return n
-//     return fibonacci(n - 1) + fibonacci(n - 2)
-
-// print(fibonacci(10))`,
-//         java: `public class Fibonacci {
-//     public static int fibonacci(int n) {
-//         if (n <= 1) return n;
-//         return fibonacci(n - 1) + fibonacci(n - 2);
-//     }
-    
-//     public static void main(String[] args) {
-//         System.out.println(fibonacci(10));
-//     }
-// }`,
-//       },
-//     };
-//   }
-
-//   async convertCode() {
-//     const sourceCode = this.sourceCode.value.trim();
-//     if (!sourceCode) {
-//       alert("Please enter some source code to convert.");
-//       return;
-//     }
-
-//     this.showLoading(true);
-
-//     try {
-//       // Simulate API call delay
-//       await new Promise((resolve) => setTimeout(resolve, 2000));
-
-//       const convertedCode = this.simulateConversion(
-//         sourceCode,
-//         this.sourceLanguage.value,
-//         this.targetLanguage.value
-//       );
-
-//       this.outputCode.value = convertedCode;
-//       this.clearOutput();
-//       this.updateRunButtonState();
-//     } catch (error) {
-//       alert("Conversion failed. Please try again.");
-//       console.error("Conversion error:", error);
-//     } finally {
-//       this.showLoading(false);
-//     }
-//   }
-
-//   simulateConversion(code, fromLang, toLang) {
-//     // This is a simple simulation - in real implementation, you'd call your AI API
-//     const conversions = {
-//       "javascript-python": this.jsToPython,
-//       "python-javascript": this.pythonToJs,
-//       "javascript-java": this.jsToJava,
-//       "python-java": this.pythonToJava,
-//     };
-
-//     const conversionKey = `${fromLang}-${toLang}`;
-//     const converter = conversions[conversionKey];
-
-//     if (converter) {
-//       return converter(code);
-//     } else {
-//       return `// Converted from ${fromLang} to ${toLang}
-// // Note: This is a simulated conversion for demo purposes
-// // In production, this would use actual AI conversion
-
-// ${this.genericConversion(code, fromLang, toLang)}`;
-//     }
-//   }
-
-//   jsToPython(jsCode) {
-//     return jsCode
-//       .replace(/function\s+(\w+)\s*\([^)]*\)\s*{/g, "def $1():")
-//       .replace(/console\.log\(/g, "print(")
-//       .replace(/let\s+/g, "")
-//       .replace(/const\s+/g, "")
-//       .replace(/var\s+/g, "")
-//       .replace(/\/\/\s*/g, "# ")
-//       .replace(/true/g, "True")
-//       .replace(/false/g, "False")
-//       .replace(/null/g, "None");
-//   }
-
-//   pythonToJs(pythonCode) {
-//     return (
-//       pythonCode
-//         .replace(/def\s+(\w+)\s*\([^)]*\):/g, "function $1() {")
-//         .replace(/print\(/g, "console.log(")
-//         .replace(/#\s*/g, "// ")
-//         .replace(/True/g, "true")
-//         .replace(/False/g, "false")
-//         .replace(/None/g, "null")
-//         .split("\n")
-//         .map((line) => line.replace(/^(\s*)/, "$1"))
-//         .join("\n") + "\n}"
-//     );
-//   }
-
-//   jsToJava(jsCode) {
-//     return `public class ConvertedCode {
-//     ${jsCode
-//       .replace(/function\s+(\w+)/g, "public static void $1")
-//       .replace(/console\.log/g, "System.out.println")}
-// }`;
-//   }
-
-//   pythonToJava(pythonCode) {
-//     return `public class ConvertedCode {
-//     ${pythonCode
-//       .replace(/def\s+(\w+)/g, "public static void $1")
-//       .replace(/print/g, "System.out.println")
-//       .replace(/#/g, "//")}
-// }`;
-//   }
-
-//   genericConversion(code, fromLang, toLang) {
-//     const langComments = {
-//       javascript: "//",
-//       python: "#",
-//       java: "//",
-//       cpp: "//",
-//       csharp: "//",
-//       php: "//",
-//       ruby: "#",
-//       go: "//",
-//       rust: "//",
-//       typescript: "//",
-//     };
-
-//     const comment = langComments[toLang] || "//";
-//     return `${comment} Original ${fromLang} code converted to ${toLang}:\n\n${code}`;
-//   }
-
-//   swapLanguages() {
-//     const sourceValue = this.sourceLanguage.value;
-//     const targetValue = this.targetLanguage.value;
-
-//     this.sourceLanguage.value = targetValue;
-//     this.targetLanguage.value = sourceValue;
-
-//     // Also swap the code if there's converted code
-//     if (this.outputCode.value) {
-//       const tempCode = this.sourceCode.value;
-//       this.sourceCode.value = this.outputCode.value;
-//       this.outputCode.value = tempCode;
-//     }
-//   }
-
-//   loadExample(lang, code) {
-//     this.sourceLanguage.value = lang;
-//     this.sourceCode.value = code;
-//     this.outputCode.value = "";
-//     this.clearOutput();
-//     this.updateRunButtonState();
-//   }
-
-//   showLoading(show) {
-//     if (show) {
-//       this.convertText.style.display = "none";
-//       this.loadingSpinner.style.display = "block";
-//       this.convertBtn.disabled = true;
-//     } else {
-//       this.convertText.style.display = "block";
-//       this.loadingSpinner.style.display = "none";
-//       this.convertBtn.disabled = false;
-//     }
-//   }
-
-//   async copyToClipboard(text) {
-//     if (!text) {
-//       alert("Nothing to copy!");
-//       return;
-//     }
-
-//     try {
-//       await navigator.clipboard.writeText(text);
-//       // Show temporary success message
-//       this.showToast("Copied to clipboard!");
-//     } catch (err) {
-//       // Fallback for older browsers
-//       const textArea = document.createElement("textarea");
-//       textArea.value = text;
-//       document.body.appendChild(textArea);
-//       textArea.select();
-//       document.execCommand("copy");
-//       document.body.removeChild(textArea);
-//       this.showToast("Copied to clipboard!");
-//     }
-//   }
-
-//   downloadCode() {
-//     const code = this.outputCode.value;
-//     if (!code) {
-//       alert("No converted code to download!");
-//       return;
-//     }
-
-//     const extensions = {
-//       javascript: "js",
-//       python: "py",
-//       java: "java",
-//       cpp: "cpp",
-//       csharp: "cs",
-//       php: "php",
-//       ruby: "rb",
-//       go: "go",
-//       rust: "rs",
-//       typescript: "ts",
-//     };
-
-//     const ext = extensions[this.targetLanguage.value] || "txt";
-//     const filename = `converted_code.${ext}`;
-
-//     const blob = new Blob([code], { type: "text/plain" });
-//     const url = URL.createObjectURL(blob);
-//     const a = document.createElement("a");
-//     a.href = url;
-//     a.download = filename;
-//     document.body.appendChild(a);
-//     a.click();
-//     document.body.removeChild(a);
-//     URL.revokeObjectURL(url);
-//   }
-
-//   showToast(message) {
-//     const toast = document.createElement("div");
-//     toast.className = "toast";
-//     toast.textContent = message;
-//     document.body.appendChild(toast);
-
-//     setTimeout(() => {
-//       toast.classList.add("show");
-//     }, 100);
-
-//     setTimeout(() => {
-//       toast.classList.remove("show");
-//       setTimeout(() => document.body.removeChild(toast), 300);
-//     }, 2000);
-//   }
-// }
-
-// // Initialize the code converter when page loads
-// document.addEventListener("DOMContentLoaded", () => {
-//   const converter = new CodeConverter();
-
-//   // Update run button state when output code changes
-//   const outputCode = document.getElementById("output-code");
-//   if (outputCode) {
-//     outputCode.addEventListener("input", () =>
-//       converter.updateRunButtonState()
-//     );
-//   }
-// });
-
-// Mobile menu toggle
-document.getElementById("menu-toggle").onclick = function () {
-  var nav = document.getElementById("nav-menu");
-  nav.classList.toggle("active");
-};
-
-// Code conversion functionality
+// static/js/agent.js
 class CodeConverter {
-  constructor() {
-    this.initializeElements();
-    this.bindEvents();
-    this.codeExamples = this.initializeCodeExamples();
-    this.apiBaseUrl = '/api';  // Django API endpoints
-  }
-
-  async runCode() {
-    const code = this.outputCode.value.trim();
-    if (!code) {
-      this.showToast("No code to run!");
-      return;
+    constructor() {
+        this.initializeElements();
+        this.attachEventListeners();
+        this.currentTab = 'code';
     }
 
-    this.switchTab("output");
-    this.setOutputStatus("Running...", "running");
-    this.runBtn.disabled = true;
-    this.runBtn.innerHTML = '<div class="mini-spinner"></div> Running';
+    initializeElements() {
+        // Language selectors
+        this.sourceLanguageSelect = document.getElementById('source-language');
+        this.targetLanguageSelect = document.getElementById('target-language');
+        this.swapLanguagesBtn = document.getElementById('swap-languages');
 
-    try {
-      const result = await this.executeCodeOnServer(code, this.targetLanguage.value);
-      this.displayOutput(result);
-    } catch (error) {
-      this.displayError(error.message);
-    } finally {
-      this.runBtn.disabled = false;
-      this.runBtn.innerHTML = "▶ Run";
-    }
-  }
+        // Code editors
+        this.sourceCodeTextarea = document.getElementById('source-code');
+        this.outputCodeTextarea = document.getElementById('output-code');
 
-  async executeCodeOnServer(code, language) {
-    try {
-      const response = await fetch(`${this.apiBaseUrl}/execute/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': this.getCSRFToken(),
-        },
-        body: JSON.stringify({
-          code: code,
-          language: language
-        })
-      });
+        // Buttons
+        this.convertBtn = document.getElementById('convert-btn');
+        this.clearSourceBtn = document.getElementById('clear-source');
+        this.copySourceBtn = document.getElementById('copy-source');
+        this.copyOutputBtn = document.getElementById('copy-output');
+        this.downloadOutputBtn = document.getElementById('download-output');
+        this.runCodeBtn = document.getElementById('run-code');
+        this.clearOutputBtn = document.getElementById('clear-output');
 
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'Execution failed');
-      }
+        // UI elements
+        this.convertText = document.querySelector('.convert-text');
+        this.loadingSpinner = document.querySelector('.loading-spinner');
+        this.outputStatus = document.getElementById('output-status');
+        this.outputContent = document.getElementById('output-content');
 
-      return {
-        success: true,
-        output: data.output,
-        executionTime: data.execution_time
-      };
-    } catch (error) {
-      throw new Error(`Execution Error: ${error.message}`);
-    }
-  }
+        // Tabs
+        this.tabButtons = document.querySelectorAll('.tab-btn');
+        this.tabContents = document.querySelectorAll('.tab-content');
 
-  async convertCode() {
-    const sourceCode = this.sourceCode.value.trim();
-    if (!sourceCode) {
-      this.showToast("Please enter some source code to convert.");
-      return;
+        // CSRF token
+        this.csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                        document.querySelector('input[name="csrfmiddlewaretoken"]')?.value ||
+                        this.getCSRFTokenFromCookie();
     }
 
-    if (this.sourceLanguage.value === this.targetLanguage.value) {
-      this.showToast("Source and target languages cannot be the same.");
-      return;
-    }
-
-    this.showLoading(true);
-
-    try {
-      const convertedCode = await this.convertWithGemini(
-        sourceCode,
-        this.sourceLanguage.value,
-        this.targetLanguage.value
-      );
-
-      this.outputCode.value = convertedCode;
-      this.clearOutput();
-      this.updateRunButtonState();
-      this.showToast("Code converted successfully!");
-      
-    } catch (error) {
-      this.showToast("Conversion failed. Please try again.");
-      console.error("Conversion error:", error);
-    } finally {
-      this.showLoading(false);
-    }
-  }
-
-  async convertWithGemini(sourceCode, fromLang, toLang) {
-    try {
-      const response = await fetch(`${this.apiBaseUrl}/convert/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': this.getCSRFToken(),
-        },
-        body: JSON.stringify({
-          source_code: sourceCode,
-          source_language: fromLang,
-          target_language: toLang
-        })
-      });
-
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'Conversion failed');
-      }
-
-      return data.converted_code;
-      
-    } catch (error) {
-      throw new Error(`API Error: ${error.message}`);
-    }
-  }
-
-  getCSRFToken() {
-    // Get CSRF token for Django
-    const token = document.querySelector('[name=csrfmiddlewaretoken]');
-    if (token) {
-      return token.value;
-    }
-    
-    // Alternative method using cookies
-    const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-      const [name, value] = cookie.trim().split('=');
-      if (name === 'csrftoken') {
-        return value;
-      }
-    }
-    return '';
-  }
-
-  displayOutput(result) {
-    this.setOutputStatus(
-      `Executed in ${result.executionTime}ms`,
-      "success"
-    );
-    this.outputContent.textContent = result.output;
-    this.outputContent.className = "output-content success";
-  }
-
-  displayError(errorMessage) {
-    this.setOutputStatus("Execution failed", "error");
-    this.outputContent.textContent = errorMessage;
-    this.outputContent.className = "output-content error";
-  }
-
-  setOutputStatus(message, type) {
-    this.outputStatus.textContent = message;
-    this.outputStatus.className = `output-status ${type}`;
-  }
-
-  clearOutput() {
-    this.outputContent.textContent =
-      'Click "Run" to execute the converted code...';
-    this.outputContent.className = "output-content";
-    this.setOutputStatus("Ready to run", "");
-  }
-
-  switchTab(tabName) {
-    // Update tab buttons
-    document.querySelectorAll(".tab-btn").forEach((btn) => {
-      btn.classList.toggle("active", btn.dataset.tab === tabName);
-    });
-
-    // Update tab content
-    document.querySelectorAll(".tab-content").forEach((content) => {
-      content.classList.toggle("active", content.dataset.tab === tabName);
-    });
-  }
-
-  updateRunButtonState() {
-    const hasCode = this.outputCode.value.trim().length > 0;
-    this.runBtn.disabled = !hasCode;
-    this.runBtn.style.opacity = hasCode ? "1" : "0.5";
-  }
-
-  initializeElements() {
-    this.sourceLanguage = document.getElementById("source-language");
-    this.targetLanguage = document.getElementById("target-language");
-    this.sourceCode = document.getElementById("source-code");
-    this.outputCode = document.getElementById("output-code");
-    this.codeOutput = document.getElementById("code-output");
-    this.outputContent = document.getElementById("output-content");
-    this.outputStatus = document.getElementById("output-status");
-    this.convertBtn = document.getElementById("convert-btn");
-    this.runBtn = document.getElementById("run-code");
-    this.swapBtn = document.getElementById("swap-languages");
-    this.convertText = this.convertBtn.querySelector(".convert-text");
-    this.loadingSpinner = this.convertBtn.querySelector(".loading-spinner");
-  }
-
-  bindEvents() {
-    this.convertBtn.addEventListener("click", () => this.convertCode());
-    this.runBtn.addEventListener("click", () => this.runCode());
-    this.swapBtn.addEventListener("click", () => this.swapLanguages());
-
-    // Tab switching
-    document.querySelectorAll(".tab-btn").forEach((btn) => {
-      btn.addEventListener("click", (e) =>
-        this.switchTab(e.target.dataset.tab)
-      );
-    });
-
-    // Button events
-    document.getElementById("clear-source").addEventListener("click", () => {
-      this.sourceCode.value = "";
-      this.outputCode.value = "";
-      this.clearOutput();
-      this.updateRunButtonState();
-    });
-
-    document
-      .getElementById("clear-output")
-      .addEventListener("click", () => this.clearOutput());
-    document
-      .getElementById("copy-source")
-      .addEventListener("click", () =>
-        this.copyToClipboard(this.sourceCode.value)
-      );
-    document
-      .getElementById("copy-output")
-      .addEventListener("click", () =>
-        this.copyToClipboard(this.outputCode.value)
-      );
-    document
-      .getElementById("download-output")
-      .addEventListener("click", () => this.downloadCode());
-
-    // Example buttons
-    document.querySelectorAll(".example-btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        const lang = e.target.dataset.lang;
-        const code = e.target.dataset.code;
-        this.loadExample(lang, code);
-      });
-    });
-  }
-
-  initializeCodeExamples() {
-    return {
-      fibonacci: {
-        javascript: `function fibonacci(n) {
-    if (n <= 1) return n;
-    return fibonacci(n - 1) + fibonacci(n - 2);
-}
-
-console.log(fibonacci(10));`,
-        python: `def fibonacci(n):
-    if n <= 1:
-        return n
-    return fibonacci(n - 1) + fibonacci(n - 2)
-
-print(fibonacci(10))`,
-        java: `public class Fibonacci {
-    public static int fibonacci(int n) {
-        if (n <= 1) return n;
-        return fibonacci(n - 1) + fibonacci(n - 2);
-    }
-    
-    public static void main(String[] args) {
-        System.out.println(fibonacci(10));
-    }
-}`,
-      },
-    };
-  }
-
-  swapLanguages() {
-    const sourceValue = this.sourceLanguage.value;
-    const targetValue = this.targetLanguage.value;
-
-    this.sourceLanguage.value = targetValue;
-    this.targetLanguage.value = sourceValue;
-
-    // Also swap the code if there's converted code
-    if (this.outputCode.value) {
-      const tempCode = this.sourceCode.value;
-      this.sourceCode.value = this.outputCode.value;
-      this.outputCode.value = tempCode;
-    }
-  }
-
-  loadExample(lang, code) {
-    this.sourceLanguage.value = lang;
-    this.sourceCode.value = code;
-    this.outputCode.value = "";
-    this.clearOutput();
-    this.updateRunButtonState();
-  }
-
-  showLoading(show) {
-    if (show) {
-      this.convertText.style.display = "none";
-      this.loadingSpinner.style.display = "block";
-      this.convertBtn.disabled = true;
-    } else {
-      this.convertText.style.display = "block";
-      this.loadingSpinner.style.display = "none";
-      this.convertBtn.disabled = false;
-    }
-  }
-
-  async copyToClipboard(text) {
-    if (!text) {
-      this.showToast("Nothing to copy!");
-      return;
-    }
-
-    try {
-      await navigator.clipboard.writeText(text);
-      this.showToast("Copied to clipboard!");
-    } catch (err) {
-      // Fallback for older browsers
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textArea);
-      this.showToast("Copied to clipboard!");
-    }
-  }
-
-  downloadCode() {
-    const code = this.outputCode.value;
-    if (!code) {
-      this.showToast("No converted code to download!");
-      return;
-    }
-
-    const extensions = {
-      javascript: "js",
-      python: "py",
-      java: "java",
-      cpp: "cpp",
-      csharp: "cs",
-      php: "php",
-      ruby: "rb",
-      go: "go",
-      rust: "rs",
-      typescript: "ts",
-    };
-
-    const ext = extensions[this.targetLanguage.value] || "txt";
-    const filename = `converted_code.${ext}`;
-
-    const blob = new Blob([code], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
-
-  showToast(message) {
-    const toast = document.createElement("div");
-    toast.className = "toast";
-    toast.textContent = message;
-    
-    // Add some basic styling
-    toast.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #333;
-      color: white;
-      padding: 12px 24px;
-      border-radius: 6px;
-      z-index: 10000;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    `;
-    
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-      toast.style.opacity = "1";
-    }, 100);
-
-    setTimeout(() => {
-      toast.style.opacity = "0";
-      setTimeout(() => {
-        if (document.body.contains(toast)) {
-          document.body.removeChild(toast);
+    getCSRFTokenFromCookie() {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, 'csrftoken'.length + 1) === ('csrftoken' + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring('csrftoken'.length + 1));
+                    break;
+                }
+            }
         }
-      }, 300);
-    }, 3000);
-  }
+        return cookieValue;
+    }
+
+    attachEventListeners() {
+        // Language swap functionality
+        this.swapLanguagesBtn?.addEventListener('click', () => this.swapLanguages());
+
+        // Convert button
+        this.convertBtn?.addEventListener('click', () => this.convertCode());
+
+        // Clear and copy buttons
+        this.clearSourceBtn?.addEventListener('click', () => this.clearSource());
+        this.copySourceBtn?.addEventListener('click', () => this.copyToClipboard(this.sourceCodeTextarea));
+        this.copyOutputBtn?.addEventListener('click', () => this.copyToClipboard(this.outputCodeTextarea));
+        this.downloadOutputBtn?.addEventListener('click', () => this.downloadCode());
+        this.runCodeBtn?.addEventListener('click', () => this.runCode());
+        this.clearOutputBtn?.addEventListener('click', () => this.clearOutput());
+
+        // Tab switching
+        this.tabButtons.forEach(button => {
+            button.addEventListener('click', () => this.switchTab(button.dataset.tab));
+        });
+
+        // Auto-resize textareas
+        this.sourceCodeTextarea?.addEventListener('input', () => this.autoResize(this.sourceCodeTextarea));
+        this.outputCodeTextarea?.addEventListener('input', () => this.autoResize(this.outputCodeTextarea));
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
+    }
+
+    swapLanguages() {
+        const sourceValue = this.sourceLanguageSelect.value;
+        const targetValue = this.targetLanguageSelect.value;
+        
+        this.sourceLanguageSelect.value = targetValue;
+        this.targetLanguageSelect.value = sourceValue;
+
+        // Also swap the code if there's converted code
+        if (this.outputCodeTextarea.value.trim()) {
+            const sourceCode = this.sourceCodeTextarea.value;
+            const outputCode = this.outputCodeTextarea.value;
+            
+            this.sourceCodeTextarea.value = outputCode;
+            this.outputCodeTextarea.value = sourceCode;
+        }
+
+        this.showNotification('Languages swapped successfully!', 'success');
+    }
+
+    async convertCode() {
+        const sourceCode = this.sourceCodeTextarea.value.trim();
+        const sourceLanguage = this.sourceLanguageSelect.value;
+        const targetLanguage = this.targetLanguageSelect.value;
+
+        // Validation
+        if (!sourceCode) {
+            this.showNotification('Please enter source code to convert', 'error');
+            this.sourceCodeTextarea.focus();
+            return;
+        }
+
+        if (sourceLanguage === targetLanguage) {
+            this.showNotification('Please select different source and target languages', 'error');
+            return;
+        }
+
+        // Show loading state
+        this.setLoadingState(true);
+        this.outputStatus.textContent = 'Converting code...';
+
+        try {
+            const response = await fetch('/convert/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.csrfToken,
+                },
+                body: JSON.stringify({
+                    source_code: sourceCode,
+                    source_language: sourceLanguage,
+                    target_language: targetLanguage
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.outputCodeTextarea.value = data.converted_code;
+                this.outputStatus.textContent = `Successfully converted from ${data.source_language} to ${data.target_language}`;
+                this.showNotification(data.message, 'success');
+                
+                // Switch to code tab to show result
+                this.switchTab('code');
+                
+                // Auto-resize the output textarea
+                this.autoResize(this.outputCodeTextarea);
+            } else {
+                this.outputStatus.textContent = 'Conversion failed';
+                this.showNotification(data.error, 'error');
+                this.clearOutput();
+            }
+        } catch (error) {
+            console.error('Conversion error:', error);
+            this.outputStatus.textContent = 'Network error occurred';
+            this.showNotification('Failed to connect to the server. Please try again.', 'error');
+        } finally {
+            this.setLoadingState(false);
+        }
+    }
+
+    async runCode() {
+        const code = this.outputCodeTextarea.value.trim();
+        const language = this.targetLanguageSelect.value;
+
+        if (!code) {
+            this.showNotification('No code to run', 'error');
+            return;
+        }
+
+        // Switch to output tab
+        this.switchTab('output');
+        this.outputStatus.textContent = 'Running code...';
+        this.outputContent.textContent = 'Executing...';
+
+        try {
+            const response = await fetch('/run-code/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.csrfToken,
+                },
+                body: JSON.stringify({
+                    code: code,
+                    language: language
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.outputStatus.textContent = 'Execution completed';
+                this.outputContent.textContent = data.output || 'Code executed successfully (no output)';
+                
+                if (data.error) {
+                    this.outputContent.textContent += '\n\nWarnings/Errors:\n' + data.error;
+                }
+                
+                this.showNotification('Code executed successfully!', 'success');
+            } else {
+                this.outputStatus.textContent = 'Execution failed';
+                this.outputContent.textContent = data.error;
+                this.showNotification(data.error, 'error');
+            }
+        } catch (error) {
+            console.error('Execution error:', error);
+            this.outputStatus.textContent = 'Network error';
+            this.outputContent.textContent = 'Failed to execute code. Please try again.';
+            this.showNotification('Failed to connect to the server', 'error');
+        }
+    }
+
+    clearSource() {
+        this.sourceCodeTextarea.value = '';
+        this.sourceCodeTextarea.focus();
+        this.showNotification('Source code cleared', 'info');
+    }
+
+    clearOutput() {
+        this.outputContent.textContent = 'Click "Run" to execute the converted code...';
+        this.outputStatus.textContent = 'Ready to run';
+    }
+
+    async copyToClipboard(textarea) {
+        const text = textarea.value;
+        
+        if (!text.trim()) {
+            this.showNotification('Nothing to copy', 'warning');
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(text);
+            this.showNotification('Code copied to clipboard!', 'success');
+        } catch (error) {
+            console.error('Copy failed:', error);
+            // Fallback method
+            textarea.select();
+            document.execCommand('copy');
+            this.showNotification('Code copied to clipboard!', 'success');
+        }
+    }
+
+    downloadCode() {
+        const code = this.outputCodeTextarea.value;
+        const language = this.targetLanguageSelect.value;
+        
+        if (!code.trim()) {
+            this.showNotification('No code to download', 'warning');
+            return;
+        }
+
+        const fileExtensions = {
+            javascript: '.js',
+            python: '.py',
+            java: '.java',
+            cpp: '.cpp',
+            csharp: '.cs',
+            php: '.php',
+            ruby: '.rb',
+            go: '.go',
+            rust: '.rs',
+            typescript: '.ts'
+        };
+
+        const extension = fileExtensions[language] || '.txt';
+        const filename = `converted_code${extension}`;
+        
+        const blob = new Blob([code], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        this.showNotification(`Code downloaded as ${filename}`, 'success');
+    }
+
+    switchTab(tabName) {
+        // Update tab buttons
+        this.tabButtons.forEach(button => {
+            button.classList.toggle('active', button.dataset.tab === tabName);
+        });
+
+        // Update tab content
+        this.tabContents.forEach(content => {
+            content.classList.toggle('active', content.dataset.tab === tabName);
+        });
+
+        this.currentTab = tabName;
+    }
+
+    setLoadingState(isLoading) {
+        this.convertBtn.disabled = isLoading;
+        
+        if (isLoading) {
+            this.convertText.style.display = 'none';
+            this.loadingSpinner.style.display = 'flex';
+        } else {
+            this.convertText.style.display = 'inline';
+            this.loadingSpinner.style.display = 'none';
+        }
+    }
+
+    autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = Math.min(textarea.scrollHeight, 600) + 'px';
+    }
+
+    handleKeyboardShortcuts(e) {
+        // Ctrl/Cmd + Enter to convert
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            this.convertCode();
+        }
+        
+        // Ctrl/Cmd + Shift + R to run code
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R') {
+            e.preventDefault();
+            this.runCode();
+        }
+
+        // Ctrl/Cmd + Shift + S to swap languages
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'S') {
+            e.preventDefault();
+            this.swapLanguages();
+        }
+    }
+
+    showNotification(message, type = 'info') {
+        // Remove existing notifications
+        const existingNotification = document.querySelector('.notification');
+        if (existingNotification) {
+            existingNotification.remove();
+        }
+
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <span class="notification-message">${message}</span>
+            <button class="notification-close">&times;</button>
+        `;
+
+        // Add to page
+        document.body.appendChild(notification);
+
+        // Add close functionality
+        const closeBtn = notification.querySelector('.notification-close');
+        closeBtn.addEventListener('click', () => notification.remove());
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 5000);
+
+        // Trigger animation
+        setTimeout(() => notification.classList.add('show'), 10);
+    }
 }
 
-// Initialize the code converter when page loads
-document.addEventListener("DOMContentLoaded", () => {
-  const converter = new CodeConverter();
-
-  // Update run button state when output code changes
-  const outputCode = document.getElementById("output-code");
-  if (outputCode) {
-    outputCode.addEventListener("input", () =>
-      converter.updateRunButtonState()
-    );
-  }
+// Initialize the code converter when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    window.codeConverter = new CodeConverter();
+    
+    // Add some helpful information
+    console.log('Code Converter initialized successfully!');
+    console.log('Keyboard shortcuts:');
+    console.log('  Ctrl/Cmd + Enter: Convert code');
+    console.log('  Ctrl/Cmd + Shift + R: Run code');
+    console.log('  Ctrl/Cmd + Shift + S: Swap languages');
 });
