@@ -16,4 +16,4 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'codeConversion.settings')
 application = get_wsgi_application()
 
 # For Vercel
-app = application
+# app = application

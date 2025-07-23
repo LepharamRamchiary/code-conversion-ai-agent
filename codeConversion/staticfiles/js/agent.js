@@ -125,7 +125,7 @@ class CodeConverter {
         this.outputStatus.textContent = 'Converting code...';
 
         try {
-            const response = await fetch('/convert/', {
+            const response = await fetch('/api/convert/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -179,7 +179,7 @@ class CodeConverter {
         this.outputContent.textContent = 'Executing...';
 
         try {
-            const response = await fetch('/run-code/', {
+            const response = await fetch('api/run-code/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

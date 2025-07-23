@@ -5,6 +5,6 @@ from . import views
 
 urlpatterns = [
     path('', views.agent, name='agent'),
-    path('api/convert/', views.convert_code, name='convert_code'),
-    path('api/execute/', views.run_code, name='run_code'),
+    path('convert/', views.convert_code, name='convert_code'),
+    path('run-code/', views.run_code, name='run_code'),
 ]
