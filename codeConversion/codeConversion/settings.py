@@ -85,13 +85,12 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files configuration for Vercel - THIS IS THE KEY CHANGE
+# Static files configuration for Vercel
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
-# This must match the distDir in vercel.json
-STATIC_ROOT = BASE_DIR / 'staticfiles_build' / 'static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

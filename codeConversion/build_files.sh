@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Building the project..."
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 
 echo "Making migrations..."
 python manage.py makemigrations --noinput
