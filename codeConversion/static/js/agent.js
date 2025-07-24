@@ -232,7 +232,7 @@ class CodeConverter {
         if (!text.trim()) {
             this.showNotification('Nothing to copy', 'warning');
             return;
-        }
+        } 
 
         try {
             await navigator.clipboard.writeText(text);

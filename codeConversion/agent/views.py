@@ -8,9 +8,10 @@ import logging
 import subprocess
 import tempfile
 import os
+from django.http import JsonResponse
 from .gemini_service import gemini_converter
 
-logger = logging.getLogger('converter')
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 def agent(request):
@@ -120,7 +121,8 @@ def run_code(request):
             })
         
         # Security check - only allow safe languages for execution
-        executable_languages = ['python', 'javascript']
+        executable_languages = ['javascript', 'python', 'java', 'cpp', 'csharp', 
+            'php', 'ruby', 'go', 'rust', 'typescript']
         
         if language not in executable_languages:
             return JsonResponse({
@@ -161,16 +163,32 @@ def execute_code(code, language):
                     ['python', temp_file_path],
                     capture_output=True,
                     text=True,
-                    timeout=10  # 10 second timeout
+                    timeout=10
                 )
+            
             elif language == 'javascript':
                 # Execute JavaScript code with Node.js
                 result = subprocess.run(
                     ['node', temp_file_path],
                     capture_output=True,
                     text=True,
-                    timeout=10  # 10 second timeout
+                    timeout=10
                 )
+            elif language == 'java':
+                result = subprocess.run(
+                    ['java', temp_file_path],
+                    capture_output=True,
+                    text=True,
+                    timeout=10
+                )
+            elif language == 'php':
+                # Execute PHP code
+                result = subprocess.run(
+                    ['php', temp_file_path],
+                    capture_output=True,
+                    text=True,
+                    timeout=10
+                )          
             else:
                 return {
                     'success': False,
@@ -202,10 +220,10 @@ def execute_code(code, language):
             'success': False,
             'error': 'Code execution timed out (10 seconds limit)'
         }
-    except FileNotFoundError:
+    except FileNotFoundError as e:
         return {
             'success': False,
-            'error': f'Runtime not found for {language}. Please ensure it is installed.'
+            'error': f'Runtime not found for {language}. Please ensure it is installed. Details: {str(e)}'
         }
     except Exception as e:
         return {
