@@ -11,7 +11,7 @@ import os
 from django.http import JsonResponse
 from .gemini_service import gemini_converter
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('converter')
 
 # Create your views here.
 def agent(request):
