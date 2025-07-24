@@ -1,0 +1,135 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}{% endblock %}
+{%block extra_css %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}" /> 
+{% endblock %} 
+{%block content %}
+  <body>
+    <div class="hero-section">
+      <h1 class="hero-title">About Our Platform</h1>
+      <p class="hero-subtitle">
+        Revolutionizing code conversion with cutting-edge technology and
+        seamless automation
+      </p>
+    </div>
+
+    <div class="content-wrapper">
+      <section class="mission-section animate-on-scroll">
+        <h2 class="section-title">About</h2>
+        <p class="section-content">
+          At CodeConversion, we're revolutionizing how developers work across programming languages. Our powerful platform not only converts code from one language to another with precision using AI-driven algorithms and intelligent syntax mapping — it also allows users to run and test their code in real time. Currently, users can execute code in popular languages like PHP, Java, JavaScript, and Python. Support for additional languages is actively being integrated to ensure even broader compatibility. Our mission is simple: streamline development, accelerate code migration, and let developers focus on what they do best — building great applications.
+        </p>
+      </section>
+
+      <section class="features-section animate-on-scroll">
+        <h2 class="section-title">Why Choose Us</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3 class="feature-title">Lightning Fast</h3>
+            <p class="feature-description">
+              Convert your code in seconds, not hours. Our optimized algorithms
+              ensure rapid processing without compromising quality.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3 class="feature-title">High Accuracy</h3>
+            <p class="feature-description">
+              Advanced AI models trained on millions of code samples ensure
+              precise conversion with minimal manual adjustments needed.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔧</div>
+            <h3 class="feature-title">Multi-Language</h3>
+            <p class="feature-description">
+              Support for 10 programming languages and frameworks. From Python
+              to JavaScript, we've got you covered.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3 class="feature-title">Secure</h3>
+            <p class="feature-description">
+              Your code is processed securely with enterprise-grade encryption.
+              We never store or share your intellectual property.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎨</div>
+            <h3 class="feature-title">Smart Formatting</h3>
+            <p class="feature-description">
+              Maintains code structure and applies best practices for the target
+              language automatically.
+            </p>
+          </div>
+      </section>
+
+      <section class="team-section animate-on-scroll">
+        <h2 class="section-title">Meet Our Team</h2>
+        <div class="team-grid">
+          <div class="team-member">
+            <div class="team-avatar">LR</div>
+            <h3 class="team-name">Lepharam Ramchiary</h3>
+            <p class="team-role">Software Engineer</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta-section animate-on-scroll">
+        <h2 class="cta-title">Ready to Transform Your Code?</h2>
+        <p class="cta-description">
+          Join thousands of developers who trust our platform for their code
+          conversion needs
+        </p>
+        <a href="{%url 'agent'%}" class="cta-button">Get Started Today</a>
+      </section>
+    </div>
+
+    <script>
+      // Smooth scroll animations
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animated");
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll(".animate-on-scroll").forEach((el) => {
+        observer.observe(el);
+      });
+
+      // Add hover effects to feature cards
+      document.querySelectorAll(".feature-card").forEach((card) => {
+        card.addEventListener("mouseenter", function () {
+          this.style.transform = "translateY(-10px)";
+        });
+
+        card.addEventListener("mouseleave", function () {
+          this.style.transform = "translateY(0)";
+        });
+      });
+
+      // Add click animation to CTA button
+      document
+        .querySelector(".cta-button")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          this.style.transform = "scale(0.95)";
+          setTimeout(() => {
+            this.style.transform = "scale(1)";
+            window.location = this.href;
+          }, 150);
+        });
+    </script>
+  </body>
+</html>
+{%endblock%}
