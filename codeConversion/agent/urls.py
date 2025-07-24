@@ -8,4 +8,5 @@ urlpatterns = [
     path('convert/', views.convert_code, name='convert_code'),
     path('run-code/', views.run_code, name='run_code'),
     path('about/', views.about, name='about'),
+    path('blog/', views.blog, name='blog'),
 ]

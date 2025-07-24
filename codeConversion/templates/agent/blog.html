@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/blog.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="blog-container">
+    <!-- Blog Header -->
+    <div class="blog-header">
+        <h1 class="blog-title">Our Blog</h1>
+        <p class="blog-subtitle">
+            This is a sample UI section. Articles and blogs are not available at the moment.
+        </p>
+    </div>
+
+    <!-- Categories Filter -->
+    <div class="categories-section animate-on-scroll">
+        <h3 class="categories-title">Browse by Category</h3>
+        <div class="categories-filter">
+            <a href="#" class="category-tag active">All Posts</a>
+            <a href="#" class="category-tag">Tutorials</a>
+            <a href="#" class="category-tag">Tech News</a>
+            <a href="#" class="category-tag">Tips & Tricks</a>
+            <a href="#" class="category-tag">Case Studies</a>
+            <a href="#" class="category-tag">Updates</a>
+        </div>
+    </div>
+
+    <!-- Featured Post -->
+    <div class="featured-section animate-on-scroll">
+        <div class="featured-post">
+            <div class="featured-image">
+                🚀
+            </div>
+            <div class="featured-content">
+                <div class="featured-badge">Featured</div>
+                <h2 class="featured-post-title">The Future of Code Conversion: AI-Powered Development</h2>
+                <p class="featured-excerpt">
+                    Discover how artificial intelligence is revolutionizing the way developers convert and migrate code between different programming languages and frameworks.
+                </p>
+                <div class="featured-meta">
+                    <span>📅 Dec 15, 2024</span>
+                    <span>👤 Alex Kumar</span>
+                    <span>⏱️ 8 min read</span>
+                </div>
+                <a href="#" class="read-more-btn">Read Full Article</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blog Posts Grid -->
+    <div class="posts-section animate-on-scroll">
+        <h2 class="section-title">Latest Articles</h2>
+        <div class="posts-grid">
+            <!-- Post 1 -->
+            <article class="post-card">
+                <div class="post-image tech">💻</div>
+                <div class="post-content">
+                    <div class="post-category">Tutorial</div>
+                    <h3 class="post-title">Converting Python to JavaScript: Best Practices</h3>
+                    <p class="post-excerpt">
+                        Learn the essential techniques and common pitfalls when converting Python code to JavaScript, with practical examples and expert tips.
+                    </p>
+                    <div class="post-meta">
+                        <span>Dec 12, 2024</span>
+                        <span>5 min read</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Post 2 -->
+            <article class="post-card">
+                <div class="post-image tutorial">🎯</div>
+                <div class="post-content">
+                    <div class="post-category">Tips & Tricks</div>
+                    <h3 class="post-title">10 Code Conversion Tools Every Developer Should Know</h3>
+                    <p class="post-excerpt">
+                        A comprehensive guide to the most effective code conversion tools available today, including their strengths and use cases.
+                    </p>
+                    <div class="post-meta">
+                        <span>Dec 10, 2024</span>
+                        <span>7 min read</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Post 3 -->
+            <article class="post-card">
+                <div class="post-image news">📰</div>
+                <div class="post-content">
+                    <div class="post-category">Tech News</div>
+                    <h3 class="post-title">Major Framework Updates: What Developers Need to Know</h3>
+                    <p class="post-excerpt">
+                        Stay up-to-date with the latest framework updates and how they impact code conversion and migration strategies.
+                    </p>
+                    <div class="post-meta">
+                        <span>Dec 8, 2024</span>
+                        <span>6 min read</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Post 4 -->
+            <article class="post-card">
+                <div class="post-image tips">⚡</div>
+                <div class="post-content">
+                    <div class="post-category">Case Study</div>
+                    <h3 class="post-title">Migrating a Legacy Java Application to Modern Frameworks</h3>
+                    <p class="post-excerpt">
+                        A detailed case study of successfully migrating a large-scale Java application to modern frameworks using automated conversion tools.
+                    </p>
+                    <div class="post-meta">
+                        <span>Dec 5, 2024</span>
+                        <span>12 min read</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Post 5 -->
+            <article class="post-card">
+                <div class="post-image tech">🔧</div>
+                <div class="post-content">
+                    <div class="post-category">Tutorial</div>
+                    <h3 class="post-title">Database Schema Conversion: SQL to NoSQL</h3>
+                    <p class="post-excerpt">
+                        Master the art of converting relational database schemas to NoSQL formats with this comprehensive guide.
+                    </p>
+                    <div class="post-meta">
+                        <span>Dec 3, 2024</span>
+                        <span>9 min read</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Post 6 -->
+            <article class="post-card">
+                <div class="post-image tutorial">🎨</div>
+                <div class="post-content">
+                    <div class="post-category">Tips & Tricks</div>
+                    <h3 class="post-title">UI Framework Migration: React to Vue.js</h3>
+                    <p class="post-excerpt">
+                        Step-by-step guide for migrating React components to Vue.js, including state management and routing considerations.
+                    </p>
+                    <div class="post-meta">
+                        <span>Dec 1, 2024</span>
+                        <span>8 min read</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-section">
+        <div class="pagination">
+            <a href="#">← Previous</a>
+            <span class="current">1</span>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#">Next →</a>
+        </div>
+    </div>
+
+    <!-- Newsletter Signup -->
+    <div class="newsletter-section animate-on-scroll">
+        <h3 class="newsletter-title">Subscribe to Our Newsletter</h3>
+        <p class="newsletter-subtitle">Get the latest articles and updates delivered straight to your inbox</p>
+        <form class="newsletter-form">
+            <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+            <button type="submit" class="newsletter-btn">Subscribe</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Smooth scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animated');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Category filter functionality
+    document.querySelectorAll('.category-tag').forEach(tag => {
+        tag.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all tags
+            document.querySelectorAll('.category-tag').forEach(t => t.classList.remove('active'));
+            
+            // Add active class to clicked tag
+            this.classList.add('active');
+        });
+    });
+
+    // Post card click handling
+    document.querySelectorAll('.post-card').forEach(card => {
+        card.addEventListener('click', function() {
+            // Add click animation
+            this.style.transform = 'translateY(-8px) scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = 'translateY(-8px)';
+            }, 150);
+        });
+    });
+
+    // Newsletter form handling
+    document.querySelector('.newsletter-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = this.querySelector('.newsletter-input').value;
+        if (email) {
+            alert('Thank you for subscribing! We\'ll send you updates soon.');
+            this.querySelector('.newsletter-input').value = '';
+        }
+    });
+
+    // Featured post and regular post hover effects
+    document.querySelectorAll('.post-card, .featured-post').forEach(element => {
+        element.addEventListener('mouseenter', function() {
+            this.style.transition = 'all 0.3s ease';
+        });
+    });
+</script>
+{% endblock %}

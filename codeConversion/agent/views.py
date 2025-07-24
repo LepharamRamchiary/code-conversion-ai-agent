@@ -15,16 +15,13 @@ logger = logging.getLogger('converter')
 
 # Create your views here.
 def agent(request):
-    """
-    Render the index page.
-    """
     return render(request, 'agent/agent.html')
 
 def about(request):
-    """
-    Render the about page.
-    """
     return render(request, 'agent/about.html')
+
+def blog(request):
+    return render(request, 'agent/blog.html')
 
 @csrf_exempt
 @require_http_methods(["POST"])
